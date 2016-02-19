@@ -20,9 +20,9 @@ make_swap () {
 }
 
 do_pip () {
-    pip install -U pip wheel
+    pip install --upgrade pip wheel
     IFS=' ' ; for pkg in numpy scipy scikit-learn; do
-        pip install $pkg
+        pip install --use-wheel $pkg
     done
 }
 
