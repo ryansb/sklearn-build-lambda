@@ -2,13 +2,16 @@
 - name: launch EC2 instance and build scikitlearn
   hosts: localhost
   connection: local
+  vars_files:
+    - ./vars.yml
   tasks:
-    - ec2:
-        key_name: pt_aws
+    - register: ectwo
+      ec2:
+        key_name: "{{ ssh_key }}"
         instance_type: t2.micro
         image: ami-60b6c60a
         wait: yes
-        instance_profile_name: ec2-write-demo-bucket
+        instance_profile_name: "{{ profile_name }}"
         user_data: "{{ lookup('file', 'sklearn_user_data.sh')}}"
 
         # add EBS volume
