@@ -39,8 +39,17 @@ strip_virtualenv () {
 }
 
 upload () {
-    aws s3 cp /root/venv.zip s3://tmp.serverlesscode.com/sklearn/$(date -u +%Y-%m-%d-%H:%M)-site-pkgs.zip
-    aws s3 cp /root/full-venv.zip s3://tmp.serverlesscode.com/sklearn/$(date -u +%Y-%m-%d-%H:%M)-full-venv.zip
+    inst_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+    aws s3 cp /root/venv.zip "s3://tmp.serverlesscode.com/sklearn/${inst_id}-site-pkgs.zip"
+    aws s3 cp /root/full-venv.zip "s3://tmp.serverlesscode.com/sklearn/${inst_id}-full-venv.zip"
+}
+
+shared_libs () {
+    libdir="$VIRTUAL_ENV/lib64/python2.7/site-packages/lib/"
+    mkdir -p $VIRTUAL_ENV/lib64/python2.7/site-packages/lib || true
+    cp /usr/lib64/atlas/* $libdir
+    cp /usr/lib64/libquadmath.so.0 $libdir
+    cp /usr/lib64/libgfortran.so.3 $libdir
 }
 
 main () {
@@ -53,6 +62,9 @@ main () {
     source sklearn_build/bin/activate
 
     do_pip
+
+    shared_libs
+
     strip_virtualenv
 
     # done with the venv
