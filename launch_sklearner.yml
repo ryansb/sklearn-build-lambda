@@ -1,0 +1,26 @@
+---
+- name: launch EC2 instance and build scikitlearn
+  hosts: localhost
+  connection: local
+  tasks:
+    - ec2:
+        key_name: pt_aws
+        instance_type: t2.micro
+        image: ami-60b6c60a
+        wait: yes
+        instance_profile_name: ec2-write-demo-bucket
+        user_data: "{{ lookup('file', 'sklearn_user_data.sh')}}"
+
+        # add EBS volume
+        volumes:
+          - device_name: /dev/xvda
+            delete_on_termination: true
+            volume_type: gp2
+            volume_size: 10
+
+        # networking biz
+        region: us-east-1
+        vpc_subnet_id: subnet-f42b79ce
+        assign_public_ip: yes
+        groups:
+          - default
