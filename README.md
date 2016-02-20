@@ -6,11 +6,19 @@ and its dependencies, to use them add your handler file to the zip, and add the
 handler would thus look like:
 
 ```
-import sys
-sys.path.insert(0, 'lib')
+import os
+import ctypes
+
+for d, _, files in os.walk('lib'):
+    for f in files:
+        if f.endswith('.a'):
+            continue
+        ctypes.cdll.LoadLibrary(os.path.join(d, f))
 
 import sklearn
 
 def handler(event, context):
-    pass
+    # do sklearn stuff here
+    return {'yay': 'done'}
+
 ```
