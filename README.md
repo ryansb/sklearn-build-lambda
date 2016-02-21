@@ -1,3 +1,10 @@
+## sklearn-build-lambda
+
+This repo has Ansible to launch an EC2 instance, build the full scikit-learn
+stack, and save a zipfile containing all the dependencies in S3. For more info
+about how the script works, and how to use it, see my [blog post on deploying
+sklearn to Lambda](https://serverlesscode.com/post/deploy-scikitlearn-on-lamba/)
+
 ## Building scikit-learn for Lambda
 
 Once you run `launch_sklearner.yml` you'll have a zipfile containing sklearn
