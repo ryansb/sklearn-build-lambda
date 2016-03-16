@@ -1,0 +1,45 @@
+---
+- name: launch EC2 instance and build scikitlearn
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ./vars.yml
+  tasks:
+    - register: ectwo
+      ec2:
+        key_name: "{{ ssh_key }}"
+        instance_type: t2.micro
+        image: ami-60b6c60a
+        wait: yes
+        instance_profile_name: "{{ profile_name }}"
+        user_data: "{{ lookup('file', './lxml_user_data.sh')}}"
+
+        # add EBS volume
+        volumes:
+          - device_name: /dev/xvda
+            delete_on_termination: true
+            volume_type: gp2
+            volume_size: 10
+
+        # networking biz
+        region: us-east-1
+        vpc_subnet_id: "{{ subnet_id }}"
+        assign_public_ip: yes
+        groups:
+          - default
+
+    - s3:
+        bucket: tmp.serverlesscode.com
+        object: "sklearn/{{ ectwo.instance_ids[0] }}-site-pkgs.zip"
+        dest: /tmp/sklearn-site-packages.zip
+        mode: get
+      register: result
+      until: result.failed is not defined or result.failed == false
+      retries: 15
+      delay: 90
+
+    - name: Terminate instances that were previously launched
+      ec2:
+        state: 'absent'
+        region: us-east-1
+        instance_ids: '{{ ectwo.instance_ids }}'
