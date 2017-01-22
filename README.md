@@ -7,10 +7,25 @@ sklearn to Lambda](https://serverlesscode.com/post/deploy-scikitlearn-on-lamba/)
 
 ## Building scikit-learn for Lambda
 
-Once you run `launch_sklearner.yml` you'll have a zipfile containing sklearn
-and its dependencies, to use them add your handler file to the zip, and add the
-`lib` directory so it can be used for shared libs. The minimum viable sklearn
-handler would thus look like:
+This repo contains a `build.sh` script that's intended to be run in an Amazon
+Linux docker container, and build scikit-learn, numpy, and scipy for use in AWS
+Lambda.
+
+To build the zipfile, pull the Amazon Linux image and run the build script in
+it.
+```
+$ docker pull amazonlinux:2016.09
+$ docker run -v $(pwd):/outputs -it amazonlinux:2016.09 \
+      /bin/bash /outputs/build.sh
+```
+
+That will make a file called `venv.zip` in the local directory that's around
+40MB.
+
+Once you run this, you'll have a zipfile containing sklearn and its
+dependencies, to use them add your handler file to the zip, and add the `lib`
+directory so it can be used for shared libs. The minimum viable sklearn handler
+would thus look like:
 
 ```
 import os

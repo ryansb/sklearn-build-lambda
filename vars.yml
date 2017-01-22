@@ -1,4 +1,0 @@
----
-ssh_key: kilo_aws
-profile_name: ec2-write-demo-bucket
-subnet_id: subnet-f42b79ce
