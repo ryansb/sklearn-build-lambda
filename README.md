@@ -1,18 +1,21 @@
-## sklearn-build-lambda
+# sklearn-build-lambda
 
-This repo has Ansible to launch an EC2 instance, build the full scikit-learn
-stack, and save a zipfile containing all the dependencies in S3. For more info
-about how the script works, and how to use it, see my [blog post on deploying
-sklearn to Lambda](https://serverlesscode.com/post/deploy-scikitlearn-on-lamba/)
-
-## Building scikit-learn for Lambda
+### Building scikit-learn for AWS Lambda
 
 This repo contains a `build.sh` script that's intended to be run in an Amazon
 Linux docker container, and build scikit-learn, numpy, and scipy for use in AWS
-Lambda.
+Lambda. For more info about how the script works, and how to use it, see my
+[blog post on deploying sklearn to Lambda](https://serverlesscode.com/post/scikitlearn-with-amazon-linux-container/).
+
+There was an older version of this repo, now archived in the
+[ec2-build-process](https://github.com/ryansb/sklearn-build-lambda/tree/ec2-build-process)
+branch, used an EC2 instance to perform the build process and an Ansible
+playbook to execute the build. That version still works, but the new dockerized
+version doesn't require you to launch a remote instance.
 
 To build the zipfile, pull the Amazon Linux image and run the build script in
 it.
+
 ```
 $ docker pull amazonlinux:2016.09
 $ docker run -v $(pwd):/outputs -it amazonlinux:2016.09 \
