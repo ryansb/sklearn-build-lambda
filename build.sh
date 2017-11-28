@@ -16,6 +16,7 @@ yum install -y \
 
 do_pip () {
     pip install --upgrade pip wheel
+    test -f /outputs/requirements.txt && pip install --use-wheel -r /outputs/requirements.txt
     pip install --use-wheel --no-binary numpy numpy
     pip install --use-wheel --no-binary scipy scipy
     pip install --use-wheel sklearn
@@ -26,7 +27,8 @@ strip_virtualenv () {
     find $VIRTUAL_ENV/lib64/python2.7/site-packages/ -name "*.so" | xargs strip
     echo "venv stripped size $(du -sh $VIRTUAL_ENV | cut -f1)"
 
-    pushd $VIRTUAL_ENV/lib64/python2.7/site-packages/ && zip -r -9 -q /outputs/venv.zip * ; popd
+    pushd $VIRTUAL_ENV/lib/python2.7/site-packages/ && zip -r -9 -q /tmp/partial-venv.zip * ; popd
+    pushd $VIRTUAL_ENV/lib64/python2.7/site-packages/ && zip -r -9 --out /outputs/venv.zip -q /tmp/partial-venv.zip * ; popd
     echo "site-packages compressed size $(du -sh /outputs/venv.zip | cut -f1)"
 
     pushd $VIRTUAL_ENV && zip -r -q /outputs/full-venv.zip * ; popd
