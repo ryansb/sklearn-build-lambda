@@ -48,6 +48,11 @@ def handler(event, context):
 
 ```
 
+## Extra Packages
+
+To add extra packages to the build, create a `requirements.txt` file alongside
+the `build.sh` in this repo. All packages listed there will be installed in
+addition to `sklearn`, `numpy`, and related dependencies.
 
 ## Sizing and Future Work
 
